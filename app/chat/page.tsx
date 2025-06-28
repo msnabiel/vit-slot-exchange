@@ -20,14 +20,14 @@ export default function GlobalChatPage() {
   const [input, setInput] = useState("");
   const [username, setUsername] = useState("");
 
-  // Generate or get username from localStorage
+  // Use the same user_identifier as slot requests
   useEffect(() => {
-    let storedUsername = localStorage.getItem("chat_username");
-    if (!storedUsername) {
-      storedUsername = "User_" + Math.floor(Math.random() * 10000);
-      localStorage.setItem("chat_username", storedUsername);
+    let storedId = localStorage.getItem("user_identifier");
+    if (!storedId) {
+      storedId = crypto.randomUUID();
+      localStorage.setItem("user_identifier", storedId);
     }
-    setUsername(storedUsername);
+    setUsername(storedId);
   }, []);
 
   // Fetch existing messages and subscribe to new ones
@@ -65,7 +65,7 @@ export default function GlobalChatPage() {
 
     await supabase.from("messages").insert({
       text: input,
-      user: username,
+      user: username, // This is now the user_identifier
     });
 
     setInput("");

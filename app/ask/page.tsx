@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
@@ -16,11 +16,20 @@ export default function SubmitPage() {
     course: "",
   });
 
+  useEffect(() => {
+    let userIdentifier = localStorage.getItem("user_identifier");
+    if (!userIdentifier) {
+      userIdentifier = crypto.randomUUID();
+      localStorage.setItem("user_identifier", userIdentifier);
+    }
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async () => {
+    const userIdentifier = localStorage.getItem("user_identifier")!;
     const timestampIST = new Date().toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
       hour: "2-digit",
@@ -31,9 +40,9 @@ export default function SubmitPage() {
       year: "2-digit",
     });
 
-    const formWithTimestamp = { ...form, timestamp: timestampIST };
+    const formWithMeta = { ...form, timestamp: timestampIST, user_identifier: userIdentifier };
 
-    const { error } = await supabase.from("slot_requests").insert([formWithTimestamp]);
+    const { error } = await supabase.from("slot_requests").insert([formWithMeta]);
     if (error) {
       alert("Error submitting: " + error.message);
     } else {
