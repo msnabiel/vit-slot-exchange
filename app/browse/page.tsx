@@ -1,12 +1,15 @@
 'use client';
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import Footer from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
+import { Button } from "@/components/ui/button";
+
 type SlotEntry = {
   id: string;
   have_slot: string;
@@ -22,6 +25,7 @@ type SlotEntry = {
 };
 
 export default function BrowsePage() {
+  const router = useRouter();
   const [data, setData] = useState<SlotEntry[]>([]);
   const [filter, setFilter] = useState({
     have: "",
@@ -115,7 +119,15 @@ export default function BrowsePage() {
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1 max-w-3xl mx-auto mt-10 space-y-4 px-4">
-        <h2 className="text-2xl font-bold">Browse Requests</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-2xl font-bold">Browse Requests</h2>
+          <Button
+            className="bg-green-600 text-white hover:bg-green-700"
+            onClick={() => router.push("/ask")}
+          >
+            Ask
+          </Button>
+        </div>
 
         {/* Filters */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">

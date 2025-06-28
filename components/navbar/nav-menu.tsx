@@ -37,7 +37,7 @@ export const NavMenu = (props: NavigationMenuProps) => (
       </NavigationMenuItem>
       <NavigationMenuItem>
         <NavigationMenuLink asChild>
-          <Link href="https://github.com/msnabiel/NabSTS">GitHub</Link>
+          <Link href="https://github.com/msnabiel/">GitHub</Link>
         </NavigationMenuLink>
       </NavigationMenuItem>
     </NavigationMenuList>

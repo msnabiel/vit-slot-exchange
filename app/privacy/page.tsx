@@ -102,7 +102,7 @@ export default function PrivacyPage() {
           </CardHeader>
           <CardContent>
             <p>
-              For questions or concerns, visit <a href="https://github.com/msnabiel/NabSTS" className="text-blue-600">our GitHub repository</a>.
+              For questions or concerns, visit <a href="https://github.com/msnabiel/" className="text-blue-600">our GitHub repository</a>.
             </p>
           </CardContent>
         </Card>

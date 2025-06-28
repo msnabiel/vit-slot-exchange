@@ -9,35 +9,35 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "NabSTS- Your STS Prep Companion",
+  title: "VIT Slot Exchange",
   description:
-    "Practice curated MCQs, track your progress, and master the STS syllabus with focused study material—all built by a VIT student for VIT students.",
+    "Exchange class slots easily with other VIT students. Find, request, and manage slot swaps securely and anonymously.",
   keywords: [
-    "Shadcn UI Landing Page",
-    "Shadcn UI Blocks",
-    "Shadcn UI",
-    "Landing Page",
-    "Tailwind CSS Landing Page",
-    "Beautiful Shadcn UI Landing Page",
-    "Next.js 15 Landing Page",
-    "Simple Landing Page",
-    "Landing Page Template",
-    "Landing Page Design",
+    "VIT Slot Exchange",
+    "VIT Timetable Swap",
+    "VIT Slot Swap",
+    "VIT University",
+    "Class Slot Exchange",
+    "VIT Student Tools",
+    "Slot Exchange Platform",
+    "VIT Utilities",
+    "VIT Academic Tools",
+    "Student Slot Exchange",
   ],
   openGraph: {
     type: "website",
-    siteName: "NabSTS",
+    siteName: "VIT Slot Exchange",
     locale: "en_US",
     url: "",
-    title: "NabSTS- Your STS Prep Companion",
+    title: "VIT Slot Exchange",
     description:
-      "Practice curated MCQs, track your progress, and master the STS syllabus with focused study material—all built by a VIT student for VIT students.",
+      "Exchange class slots easily with other VIT students. Find, request, and manage slot swaps securely and anonymously.",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "NabSTS- Your STS Prep Companion",
+        alt: "VIT Slot Exchange",
       },
     ],
   },

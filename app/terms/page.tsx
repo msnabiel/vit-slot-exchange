@@ -16,7 +16,10 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              By accessing or using this platform, you agree to be bound by these Terms of Service. If you do not agree with any part of the terms, you must discontinue use immediately.
+              By accessing or using{" "}
+              <span className="font-semibold">vit-slot-exchange</span>, you agree
+              to be bound by these Terms of Service. If you do not agree with any
+              part of the terms, you must discontinue use immediately.
             </p>
           </CardContent>
         </Card>
@@ -27,7 +30,10 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              This website is intended solely for academic support, offering multiple-choice question (MCQ) practice and study resources for the STS (Soft Skills) course at VIT. It is not affiliated with or officially endorsed by VIT University.
+              <span className="font-semibold">vit-slot-exchange</span> is
+              intended solely for academic support, offering a platform for VIT
+              students to exchange class slots securely and anonymously. It is
+              not affiliated with or officially endorsed by VIT University.
             </p>
           </CardContent>
         </Card>
@@ -38,11 +44,17 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              You agree to use the platform only for lawful purposes. You must not:
+              You agree to use{" "}
+              <span className="font-semibold">vit-slot-exchange</span> only for
+              lawful purposes. You must not:
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Use the platform in a way that may damage or impair the service.</li>
-              <li>Attempt to gain unauthorized access to the backend or databases.</li>
+              <li>
+                Use the platform in a way that may damage or impair the service.
+              </li>
+              <li>
+                Attempt to gain unauthorized access to the backend or databases.
+              </li>
               <li>Upload malicious code or engage in disruptive activities.</li>
             </ul>
           </CardContent>
@@ -54,7 +66,10 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              All content, including quizzes, explanations, and study guides, is the intellectual property of the platform owner unless stated otherwise. You may not copy, reproduce, or distribute materials without permission.
+              All content, including listings, code, and platform features, is
+              the intellectual property of the platform owner unless stated
+              otherwise. You may not copy, reproduce, or distribute materials
+              without permission.
             </p>
           </CardContent>
         </Card>
@@ -65,7 +80,10 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              The platform is provided “as is” without warranties of any kind. While we strive for accuracy and relevance, we do not guarantee that the content will be error-free or up-to-date.
+              <span className="font-semibold">vit-slot-exchange</span> is
+              provided “as is” without warranties of any kind. While we strive
+              for accuracy and reliability, we do not guarantee that the content
+              will be error-free or up-to-date.
             </p>
           </CardContent>
         </Card>
@@ -76,7 +94,9 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              We are not liable for any damages arising from your use of the platform, including but not limited to data loss, system errors, or performance outcomes in your course.
+              We are not liable for any damages arising from your use of{" "}
+              <span className="font-semibold">vit-slot-exchange</span>, including
+              but not limited to data loss, system errors, or academic outcomes.
             </p>
           </CardContent>
         </Card>
@@ -87,7 +107,9 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              We reserve the right to suspend or terminate access to the platform for any user who violates these terms or engages in suspicious activity.
+              We reserve the right to suspend or terminate access to{" "}
+              <span className="font-semibold">vit-slot-exchange</span> for any
+              user who violates these terms or engages in suspicious activity.
             </p>
           </CardContent>
         </Card>
@@ -98,7 +120,10 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              These Terms of Service may be updated periodically. Continued use of the platform after changes implies your acceptance of the revised terms.
+              These Terms of Service may be updated periodically. Continued use
+              of{" "}
+              <span className="font-semibold">vit-slot-exchange</span> after
+              changes implies your acceptance of the revised terms.
             </p>
           </CardContent>
         </Card>
@@ -109,7 +134,14 @@ export default function TermsPage() {
           </CardHeader>
           <CardContent>
             <p>
-              For questions regarding these terms, please contact us via <a href="https://github.com/msnabiel/NabSTS" className="text-blue-600">our GitHub repository</a>.
+              For questions regarding these terms, please contact us via{" "}
+              <a
+                href="https://github.com/msnabiel/vit-slot-exchange"
+                className="text-blue-600"
+              >
+                our GitHub repository
+              </a>
+              .
             </p>
           </CardContent>
         </Card>
