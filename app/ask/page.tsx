@@ -21,7 +21,19 @@ export default function SubmitPage() {
   };
 
   const handleSubmit = async () => {
-    const { error } = await supabase.from("slot_requests").insert([form]);
+    const timestampIST = new Date().toLocaleString("en-IN", {
+      timeZone: "Asia/Kolkata",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+      day: "2-digit",
+      month: "short",
+      year: "2-digit",
+    });
+
+    const formWithTimestamp = { ...form, timestamp: timestampIST };
+
+    const { error } = await supabase.from("slot_requests").insert([formWithTimestamp]);
     if (error) {
       alert("Error submitting: " + error.message);
     } else {
@@ -50,7 +62,7 @@ export default function SubmitPage() {
         <Input name="want_slot" placeholder="Slot You Want (e.g., B1)" value={form.want_slot} onChange={handleChange} />
         <Input name="professor_have" placeholder="Professor (Have Slot)" value={form.professor_have} onChange={handleChange} />
         <Input name="professor_need" placeholder="Professor (Want Slot)" value={form.professor_need} onChange={handleChange} />
-        <Input name="course" placeholder="Course Name (optional)" value={form.course} onChange={handleChange} />
+        <Input name="course" placeholder="Course Name" value={form.course} onChange={handleChange} />
         
         <Button onClick={handleSubmit}>Submit</Button>
       </main>

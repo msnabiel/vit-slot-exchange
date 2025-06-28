@@ -8,11 +8,12 @@ import { Navbar } from "@/components/navbar";
 type SlotEntry = {
   have_slot: string;
   want_slot: string;
-  professor_have: string; // changed
-  professor_need: string; // changed
+  professor_have: string;
+  professor_need: string;
   course: string;
   name: string;
   mobile: string;
+  timestamp?: string; // Add this line
 };
 
 export default function BrowsePage() {
@@ -95,6 +96,11 @@ export default function BrowsePage() {
                   {group.entries.map((entry, j) => (
                     <li key={j}>
                       {entry.name} - {entry.mobile}
+                      {entry.timestamp && (
+                        <span className="ml-2 text-xs text-gray-500">
+                          • {entry.timestamp}
+                        </span>
+                      )}
                     </li>
                   ))}
                 </ul>

@@ -76,34 +76,35 @@ export default function GlobalChatPage() {
       <Navbar />
       <main className="w-full max-w-4xl mx-auto mt-10 space-y-4 flex-grow flex flex-col px-4">
         <Card className="flex-1 flex flex-col">
-          <CardContent className="p-4 flex-1 overflow-y-auto bg-muted space-y-3">
+          <CardContent className="p-4 flex-1 overflow-y-auto bg-muted space-y-1">
             {messages.length === 0 && (
               <div className="text-muted-foreground text-center">No messages yet.</div>
             )}
-            {messages.map((msg) => {
-              const isOwn = msg.user === username;
-              return (
-                <div
-                  key={msg.id}
-                  className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
-                      isOwn
-                        ? "bg-blue-600 text-white rounded-br-none"
-                        : "bg-green-200 text-black rounded-bl-none"
-                    }`}
-                  >
-                    {!isOwn && (
-                      <div className="text-xs font-semibold text-grey-600 mb-1">
-                        {msg.user}
-                      </div>
-                    )}
-                    <div>{msg.text}</div>
-                  </div>
-                </div>
-              );
-            })}
+            {messages.map((msg, index) => {
+  const isOwn = msg.user === username;
+  const prev = messages[index - 1];
+  const showUsername = !isOwn && (!prev || prev.user !== msg.user);
+
+  return (
+    <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
+          isOwn
+            ? "bg-blue-600 text-white rounded-br-none"
+            : "bg-green-200 text-black rounded-bl-none"
+        }`}
+      >
+        {showUsername && (
+          <div className="text-xs font-semibold text-gray-600 mb-1">
+            {msg.user}
+          </div>
+        )}
+        <div>{msg.text}</div>
+      </div>
+    </div>
+  );
+})}
+
           </CardContent>
         </Card>
 
