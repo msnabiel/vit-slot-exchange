@@ -30,7 +30,7 @@ export default function BrowsePage() {
     professor_need: "",
     course: "",
   });
-  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("open");
 
   const userIdentifier =
     typeof window !== "undefined"

@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Footer from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 type Message = {
   id: number;
@@ -20,17 +21,24 @@ export default function GlobalChatPage() {
   const [input, setInput] = useState("");
   const [username, setUsername] = useState("");
 
-  // Use the same user_identifier as slot requests
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto scroll to bottom
   useEffect(() => {
-    let storedId = localStorage.getItem("user_identifier");
-    if (!storedId) {
-      storedId = crypto.randomUUID();
-      localStorage.setItem("user_identifier", storedId);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Generate or get username from localStorage
+  useEffect(() => {
+    let storedUsername = localStorage.getItem("chat_username");
+    if (!storedUsername) {
+      storedUsername = "User_" + Math.floor(Math.random() * 10000);
+      localStorage.setItem("chat_username", storedUsername);
     }
-    setUsername(storedId);
+    setUsername(storedUsername);
   }, []);
 
-  // Fetch existing messages and subscribe to new ones
+  // Fetch messages and subscribe
   useEffect(() => {
     const fetchMessages = async () => {
       const { data } = await supabase
@@ -65,7 +73,7 @@ export default function GlobalChatPage() {
 
     await supabase.from("messages").insert({
       text: input,
-      user: username, // This is now the user_identifier
+      user: username,
     });
 
     setInput("");
@@ -76,38 +84,46 @@ export default function GlobalChatPage() {
       <Navbar />
       <main className="w-full max-w-4xl mx-auto mt-10 space-y-4 flex-grow flex flex-col px-4">
         <Card className="flex-1 flex flex-col">
-          <CardContent className="p-4 flex-1 overflow-y-auto bg-muted space-y-1">
-            {messages.length === 0 && (
-              <div className="text-muted-foreground text-center">No messages yet.</div>
-            )}
-            {messages.map((msg, index) => {
-  const isOwn = msg.user === username;
-  const prev = messages[index - 1];
-  const showUsername = !isOwn && (!prev || prev.user !== msg.user);
+          <CardContent className="p-0 flex-1 bg-muted">
+            <ScrollArea className="h-[calc(100vh-300px)] p-4 space-y-1">
+              {messages.length === 0 && (
+                <div className="text-muted-foreground text-center">
+                  No messages yet.
+                </div>
+              )}
+              {messages.map((msg, index) => {
+                const isOwn = msg.user === username;
+                const prev = messages[index - 1];
+                const showUsername = !isOwn && (!prev || prev.user !== msg.user);
 
-  return (
-    <div key={msg.id} className={`flex ${isOwn ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
-          isOwn
-            ? "bg-blue-600 text-white rounded-br-none"
-            : "bg-green-200 text-black rounded-bl-none"
-        }`}
-      >
-        {showUsername && (
-          <div className="text-xs font-semibold text-gray-600 mb-1">
-            {msg.user}
-          </div>
-        )}
-        <div>{msg.text}</div>
-      </div>
-    </div>
-  );
-})}
-
+                return (
+                  <div
+                    key={msg.id}
+                    className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+                  >
+                    <div
+                      className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
+                        isOwn
+                          ? "bg-blue-600 text-white rounded-br-none"
+                          : "bg-green-200 text-black rounded-bl-none"
+                      }`}
+                    >
+                      {showUsername && (
+                        <div className="text-xs font-semibold text-gray-600 mb-1">
+                          {msg.user}
+                        </div>
+                      )}
+                      <div>{msg.text}</div>
+                    </div>
+                  </div>
+                );
+              })}
+              <div ref={messagesEndRef} />
+            </ScrollArea>
           </CardContent>
         </Card>
 
+        {/* Input form */}
         <form
           className="flex gap-2 mt-2"
           onSubmit={(e) => {
