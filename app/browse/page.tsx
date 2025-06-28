@@ -73,11 +73,11 @@ export default function BrowsePage() {
   const filtered = useMemo(() => {
     return data.filter((entry) => {
       const matchesFilters =
-        (!filter.have || entry.have_slot.toLowerCase().includes(filter.have.toLowerCase())) &&
-        (!filter.want || entry.want_slot.toLowerCase().includes(filter.want.toLowerCase())) &&
-        (!filter.professor_have || entry.professor_have.toLowerCase().includes(filter.professor_have.toLowerCase())) &&
-        (!filter.professor_need || entry.professor_need.toLowerCase().includes(filter.professor_need.toLowerCase())) &&
-        (!filter.course || entry.course.toLowerCase().includes(filter.course.toLowerCase()));
+  (!filter.have || (entry.have_slot ?? "").toLowerCase().includes(filter.have.toLowerCase())) &&
+  (!filter.want || (entry.want_slot ?? "").toLowerCase().includes(filter.want.toLowerCase())) &&
+  (!filter.professor_have || (entry.professor_have ?? "").toLowerCase().includes(filter.professor_have.toLowerCase())) &&
+  (!filter.professor_need || (entry.professor_need ?? "").toLowerCase().includes(filter.professor_need.toLowerCase())) &&
+  (!filter.course || (entry.course ?? "").toLowerCase().includes(filter.course.toLowerCase()));
 
       const matchesStatus =
         statusFilter === "all" || entry.status === statusFilter;
@@ -89,7 +89,7 @@ export default function BrowsePage() {
   const grouped = useMemo(() => {
     const map = new Map<string, SlotEntry[]>();
     for (const entry of filtered) {
-      const key = `${entry.have_slot}|${entry.want_slot}|${entry.professor_have}|${entry.professor_need}|${entry.course}`;
+      const key = `${entry.have_slot ?? ""}|${entry.want_slot ?? ""}|${entry.professor_have ?? ""}|${entry.professor_need ?? ""}|${entry.course ?? ""}`;
       if (!map.has(key)) {
         map.set(key, []);
       }
