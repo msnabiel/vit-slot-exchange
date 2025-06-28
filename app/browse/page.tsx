@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import Footer from "@/components/footer";
 import { Navbar } from "@/components/navbar";
-
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 type SlotEntry = {
   id: string;
   have_slot: string;
@@ -30,6 +30,7 @@ export default function BrowsePage() {
     professor_need: "",
     course: "",
   });
+  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("all");
 
   const userIdentifier =
     typeof window !== "undefined"
@@ -48,56 +49,42 @@ export default function BrowsePage() {
     fetchEntries();
   }, []);
 
-const handleStatusChange = async (id: string, status: "closed" | "open") => {
-  const { error } = await supabase
-    .from("slot_requests")
-    .update({ status })
-    .eq("id", id);
+  const handleStatusChange = async (id: string, status: "closed" | "open") => {
+    const { error } = await supabase
+      .from("slot_requests")
+      .update({ status })
+      .eq("id", id);
 
-  console.log(`Trying to change status to "${status}" for ID:`, id);
-  console.log("Supabase error:", error);
+    console.log(`Trying to change status to "${status}" for ID:`, id);
+    console.log("Supabase error:", error);
 
-  if (error) {
-    console.error(`Failed to update status to "${status}":`, error);
-  } else {
-    console.log(`Request successfully marked as ${status}`);
-
-    // Update local state
-    setData((prevData) =>
-      prevData.map((entry) =>
-        entry.id === id ? { ...entry, status } : entry
-      )
-    );
-  }
-};
-
-
+    if (error) {
+      console.error(`Failed to update status to "${status}":`, error);
+    } else {
+      console.log(`Request successfully marked as ${status}`);
+      setData((prevData) =>
+        prevData.map((entry) =>
+          entry.id === id ? { ...entry, status } : entry
+        )
+      );
+    }
+  };
 
   const filtered = useMemo(() => {
-    return data.filter(
-      (entry) =>
-        (!filter.have ||
-          entry.have_slot
-            .toLowerCase()
-            .includes(filter.have.toLowerCase())) &&
-        (!filter.want ||
-          entry.want_slot
-            .toLowerCase()
-            .includes(filter.want.toLowerCase())) &&
-        (!filter.professor_have ||
-          entry.professor_have
-            .toLowerCase()
-            .includes(filter.professor_have.toLowerCase())) &&
-        (!filter.professor_need ||
-          entry.professor_need
-            .toLowerCase()
-            .includes(filter.professor_need.toLowerCase())) &&
-        (!filter.course ||
-          entry.course.toLowerCase().includes(filter.course.toLowerCase()))
-        // Optional: Uncomment this line to hide closed entries
-        // && entry.status !== "closed"
-    );
-  }, [data, filter]);
+    return data.filter((entry) => {
+      const matchesFilters =
+        (!filter.have || entry.have_slot.toLowerCase().includes(filter.have.toLowerCase())) &&
+        (!filter.want || entry.want_slot.toLowerCase().includes(filter.want.toLowerCase())) &&
+        (!filter.professor_have || entry.professor_have.toLowerCase().includes(filter.professor_have.toLowerCase())) &&
+        (!filter.professor_need || entry.professor_need.toLowerCase().includes(filter.professor_need.toLowerCase())) &&
+        (!filter.course || entry.course.toLowerCase().includes(filter.course.toLowerCase()));
+
+      const matchesStatus =
+        statusFilter === "all" || entry.status === statusFilter;
+
+      return matchesFilters && matchesStatus;
+    });
+  }, [data, filter, statusFilter]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, SlotEntry[]>();
@@ -132,37 +119,28 @@ const handleStatusChange = async (id: string, status: "closed" | "open") => {
 
         {/* Filters */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-          <Input
-            placeholder="Have Slot"
-            onChange={(e) =>
-              setFilter({ ...filter, have: e.target.value })
-            }
-          />
-          <Input
-            placeholder="Want Slot"
-            onChange={(e) =>
-              setFilter({ ...filter, want: e.target.value })
-            }
-          />
-          <Input
-            placeholder="Professor (Have)"
-            onChange={(e) =>
-              setFilter({ ...filter, professor_have: e.target.value })
-            }
-          />
-          <Input
-            placeholder="Professor (Need)"
-            onChange={(e) =>
-              setFilter({ ...filter, professor_need: e.target.value })
-            }
-          />
-          <Input
-            placeholder="Course"
-            onChange={(e) =>
-              setFilter({ ...filter, course: e.target.value })
-            }
-          />
+          <Input placeholder="Have Slot" onChange={(e) => setFilter({ ...filter, have: e.target.value })} />
+          <Input placeholder="Want Slot" onChange={(e) => setFilter({ ...filter, want: e.target.value })} />
+          <Input placeholder="Professor (Have)" onChange={(e) => setFilter({ ...filter, professor_have: e.target.value })} />
+          <Input placeholder="Professor (Need)" onChange={(e) => setFilter({ ...filter, professor_need: e.target.value })} />
+          <Input placeholder="Course" onChange={(e) => setFilter({ ...filter, course: e.target.value })} />
         </div>
+
+        {/* Status Filter Toggle Group */}
+<ToggleGroup
+  type="single"
+  value={statusFilter}
+  onValueChange={(value) => {
+    if (value) setStatusFilter(value as "all" | "open" | "closed");
+  }}
+  className="mt-2"
+>
+  <ToggleGroupItem value="all">All</ToggleGroupItem>
+  <ToggleGroupItem value="open">Open</ToggleGroupItem>
+  <ToggleGroupItem value="closed">Closed</ToggleGroupItem>
+</ToggleGroup>
+
+        
 
         {/* Grouped Listings */}
         {grouped.map((group, i) => (
@@ -194,30 +172,27 @@ const handleStatusChange = async (id: string, status: "closed" | "open") => {
                         </span>
                       )}
                       {entry.user_identifier === userIdentifier && (
-  <>
-    {entry.status !== "closed" ? (
-      <button
-        className="ml-2 text-xs text-red-600 underline"
-        onClick={() => handleStatusChange(entry.id, "closed")}
-      >
-        Close
-      </button>
-    ) : (
-      <button
-        className="ml-2 text-xs text-blue-600 underline"
-        onClick={() => handleStatusChange(entry.id, "open")}
-      >
-        Reopen
-      </button>
-    )}
-  </>
-)}
-{entry.status === "closed" && (
-  <span className="ml-2 text-xs text-gray-500">
-    [Closed]
-  </span>
-)}
-
+                        <>
+                          {entry.status !== "closed" ? (
+                            <button
+                              className="ml-2 text-xs text-red-600 underline"
+                              onClick={() => handleStatusChange(entry.id, "closed")}
+                            >
+                              Close
+                            </button>
+                          ) : (
+                            <button
+                              className="ml-2 text-xs text-blue-600 underline"
+                              onClick={() => handleStatusChange(entry.id, "open")}
+                            >
+                              Reopen
+                            </button>
+                          )}
+                        </>
+                      )}
+                      {entry.status === "closed" && (
+                        <span className="ml-2 text-xs text-gray-500">[Closed]</span>
+                      )}
                     </li>
                   ))}
                 </ul>

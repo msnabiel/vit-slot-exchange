@@ -16,51 +16,45 @@ export default function PrivacyPage() {
           </CardHeader>
           <CardContent>
             <p>
-              This platform is designed to assist VIT students with STS (Soft Skills) course preparation through MCQ-based training and curated study materials. This Privacy Policy explains how we collect, use, and protect your information when you interact with our services.
+              This platform facilitates anonymous slot exchange among VIT students. We value your privacy and this policy outlines how we handle the information you provide while using the service.
             </p>
           </CardContent>
         </Card>
 
         <Card className="shadow-lg">
           <CardHeader>
-            <h2 className="text-2xl font-semibold">2. Information We Collect</h2>
+            <h2 className="text-2xl font-semibold">2. What We Collect</h2>
           </CardHeader>
           <CardContent>
-            <p>
-              We may collect the following types of information:
-            </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li><strong>Personal Information:</strong> Such as your name and email when voluntarily submitted (e.g., leaderboard submissions).</li>
-              <li><strong>Usage Data:</strong> Including quiz attempts, scores, and session duration to help improve the platform.</li>
-              <li><strong>Cookies:</strong> To remember user preferences and track aggregate performance metrics.</li>
+              <li><strong>Slot Exchange Data:</strong> Your submitted slot preferences, course name, and professor names.</li>
+              <li><strong>Contact Info:</strong> Optional details like name or mobile number, if provided by you for others to contact you.</li>
+              <li><strong>User Identifier:</strong> A unique ID stored locally in your browser to manage your own requests (without requiring login).</li>
             </ul>
           </CardContent>
         </Card>
 
         <Card className="shadow-lg">
           <CardHeader>
-            <h2 className="text-2xl font-semibold">3. How We Use Your Information</h2>
+            <h2 className="text-2xl font-semibold">3. How We Use Your Data</h2>
           </CardHeader>
           <CardContent>
-            <p>
-              Your information is used to:
-            </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li>Deliver and improve STS MCQ quizzes and related features.</li>
-              <li>Track quiz performance and progress over time.</li>
-              <li>Maintain leaderboard functionality (if opted in).</li>
-              <li>Ensure smooth operation of the platform and its content delivery.</li>
+              <li>To display and group your slot exchange requests.</li>
+              <li>To detect mutual matches between users' preferences.</li>
+              <li>To allow you to close or reopen your own listings.</li>
+              <li>To maintain platform integrity without requiring accounts or logins.</li>
             </ul>
           </CardContent>
         </Card>
 
         <Card className="shadow-lg">
           <CardHeader>
-            <h2 className="text-2xl font-semibold">4. Data Security</h2>
+            <h2 className="text-2xl font-semibold">4. Data Visibility</h2>
           </CardHeader>
           <CardContent>
             <p>
-              We take precautions to safeguard your data and use secure storage and limited access protocols. However, as with all online services, absolute security cannot be guaranteed.
+              Your exchange request details (slot names, course, professor) are publicly visible to all users. Contact info is only visible if you choose to provide it. Your user identifier remains private in your local storage.
             </p>
           </CardContent>
         </Card>
@@ -71,50 +65,44 @@ export default function PrivacyPage() {
           </CardHeader>
           <CardContent>
             <p>
-              We do not sell or share your personal data with third parties. Information may be shared only in the following cases:
+              We do not sell or share personal data. Data is only shared in the following cases:
             </p>
             <ul className="list-disc pl-5 space-y-2">
-              <li>With your consent, such as publishing your name on the leaderboard.</li>
-              <li>To comply with legal obligations.</li>
-              <li>With trusted services necessary for platform hosting and analytics (e.g., Vercel, Supabase).</li>
+              <li>With infrastructure providers (e.g., Supabase, Vercel) for hosting and database operations.</li>
+              <li>If legally required to do so.</li>
             </ul>
           </CardContent>
         </Card>
 
         <Card className="shadow-lg">
           <CardHeader>
-            <h2 className="text-2xl font-semibold">6. User Rights</h2>
+            <h2 className="text-2xl font-semibold">6. User Controls</h2>
           </CardHeader>
           <CardContent>
             <p>
-              You may:
-            </p>
-            <ul className="list-disc pl-5 space-y-2">
-              <li>Request deletion or modification of your submitted data (e.g., name on leaderboard).</li>
-              <li>Withdraw consent for any future data use.</li>
-              <li>Contact us for any privacy-related inquiries.</li>
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card className="shadow-lg">
-          <CardHeader>
-            <h2 className="text-2xl font-semibold">7. Changes to this Privacy Policy</h2>
-          </CardHeader>
-          <CardContent>
-            <p>
-              We may update this Privacy Policy occasionally to reflect changes in the platform or relevant regulations. Please check this page for the most current version.
+              You can close or reopen your entries at any time using the same browser. If you wish to fully delete your request or have questions, contact us via the GitHub repository below.
             </p>
           </CardContent>
         </Card>
 
         <Card className="shadow-lg">
           <CardHeader>
-            <h2 className="text-2xl font-semibold">8. Contact Us</h2>
+            <h2 className="text-2xl font-semibold">7. Changes to Policy</h2>
           </CardHeader>
           <CardContent>
             <p>
-              For any questions or concerns regarding this Privacy Policy or the STS platform, please visit <a href="https://github.com/msnabiel/NabSTS" className="text-blue-600">our GitHub repository</a>.
+              We may update this Privacy Policy as the platform evolves. Updates will be reflected on this page with a revised effective date.
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card className="shadow-lg">
+          <CardHeader>
+            <h2 className="text-2xl font-semibold">8. Contact</h2>
+          </CardHeader>
+          <CardContent>
+            <p>
+              For questions or concerns, visit <a href="https://github.com/msnabiel/NabSTS" className="text-blue-600">our GitHub repository</a>.
             </p>
           </CardContent>
         </Card>
