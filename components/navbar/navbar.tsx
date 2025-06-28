@@ -20,8 +20,8 @@ const Navbar = () => {
             Sign In
           </Button>*/}
 
-          <Link href="/practice">
-  <Button className="hidden xs:inline-flex">Get Started</Button>
+          <Link href="/chat">
+  <Button className="hidden xs:inline-flex">Chat</Button>
 </Link>
 
           {/* Mobile Menu */}

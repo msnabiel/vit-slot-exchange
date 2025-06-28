@@ -30,8 +30,8 @@ export const NavigationSheet = () => {
           {/*<Button variant="outline" className="w-full sm:hidden">
             Sign In
           </Button>*/}
-          <Link href="/practice">
-  <Button className="hidden xs:inline-flex">Get Started</Button>
+          <Link href="/chat">
+  <Button className="hidden xs:inline-flex">Chat</Button>
 </Link>
         </div>
       </SheetContent>
