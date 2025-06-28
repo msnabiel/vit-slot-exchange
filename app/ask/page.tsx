@@ -5,7 +5,10 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import Footer from "@/components/footer";
 import { Navbar } from "@/components/navbar";
+import { useRouter } from "next/navigation";
+
 export default function SubmitPage() {
+  const router = useRouter();
   const [form, setForm] = useState({
     name: "",
     mobile: "",
@@ -73,7 +76,16 @@ export default function SubmitPage() {
         <Input name="professor_need" placeholder="Professor (Want Slot)" value={form.professor_need} onChange={handleChange} />
         <Input name="course" placeholder="Course Name" value={form.course} onChange={handleChange} />
         
-        <Button onClick={handleSubmit}>Submit</Button>
+        <div className="flex gap-2">
+          <Button onClick={handleSubmit}>Submit</Button>
+          <Button
+            variant="outline"
+            className="bg-green-600 text-white hover:bg-green-400"
+            onClick={() => router.push("/browse")}
+          >
+            Browse
+          </Button>
+        </div>
       </main>
       <Footer/>
     </div>

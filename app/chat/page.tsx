@@ -85,7 +85,7 @@ export default function GlobalChatPage() {
       <main className="w-full max-w-4xl mx-auto mt-10 space-y-4 flex-grow flex flex-col px-4">
         <Card className="flex-1 flex flex-col">
           <CardContent className="p-0 flex-1 bg-muted">
-            <ScrollArea className="h-[calc(100vh-300px)] p-4 space-y-1">
+            <ScrollArea className="h-[calc(100vh-300px)] p-4">
               {messages.length === 0 && (
                 <div className="text-muted-foreground text-center">
                   No messages yet.
@@ -99,7 +99,7 @@ export default function GlobalChatPage() {
                 return (
                   <div
                     key={msg.id}
-                    className={`flex ${isOwn ? "justify-end" : "justify-start"}`}
+                    className={`flex mb-1.5 ${isOwn ? "justify-end" : "justify-start"}`}
                   >
                     <div
                       className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
