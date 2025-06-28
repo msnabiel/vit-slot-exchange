@@ -62,37 +62,39 @@ export default function GlobalChatPage() {
 
   return (
     <>
-      <Navbar />
-      <main className="max-w-2xl mx-auto mt-10 space-y-4">
-        <Card>
-          <CardContent className="p-4 space-y-2 h-96 overflow-y-auto bg-muted">
-            {messages.length === 0 && (
-              <div className="text-muted-foreground text-center">No messages yet.</div>
-            )}
-            {messages.map((msg) => (
-              <div key={msg.id} className="mb-2">
-                <span className="font-semibold">{msg.user}:</span> {msg.text}
-              </div>
-            ))}
-          </CardContent>
-        </Card>
-        <form
-          className="flex gap-2"
-          onSubmit={(e) => {
-            e.preventDefault();
-            sendMessage();
-          }}
-        >
-          <Input
-            placeholder="Type your message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1"
-          />
-          <Button type="submit">Send</Button>
-        </form>
-      </main>
-      <Footer />
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="w-full max-w-4xl mx-auto mt-10 space-y-4 flex-grow flex flex-col px-4">
+          <Card className="flex-1 flex flex-col">
+            <CardContent className="p-4 space-y-2 flex-1 overflow-y-auto bg-muted">
+              {messages.length === 0 && (
+                <div className="text-muted-foreground text-center">No messages yet.</div>
+              )}
+              {messages.map((msg) => (
+                <div key={msg.id} className="mb-2">
+                  <span className="font-semibold">{msg.user}:</span> {msg.text}
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+          <form
+            className="flex gap-2 mt-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              sendMessage();
+            }}
+          >
+            <Input
+              placeholder="Type your message..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-1"
+            />
+            <Button type="submit">Send</Button>
+          </form>
+        </main>
+        <Footer />
+      </div>
     </>
   );
 }
