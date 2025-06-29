@@ -20,9 +20,11 @@ const Navbar = () => {
             Sign In
           </Button>*/}
 
-          <Link href="/chat">
-  <Button className="hidden xs:inline-flex">Chat</Button>
-</Link>
+<Link href="/chat" className="relative">
+      <Button className="hidden xs:inline-flex">Chat</Button>
+      <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500 animate-ping"></span>
+      <span className="absolute top-0 right-0 h-2 w-2 rounded-full bg-red-500"></span>
+    </Link>
 
           {/* Mobile Menu */}
           <div className="md:hidden">
