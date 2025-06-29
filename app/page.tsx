@@ -8,7 +8,6 @@ const Home = () => {
     <>
       <Navbar />
       <Hero />
-      <EmailNotify />
 
 <div className="text-center mt-4 px-4">
   <p className="text-xs text-muted-foreground">
