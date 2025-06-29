@@ -22,10 +22,16 @@ export default function GlobalChatPage() {
   const [username, setUsername] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement | null>(null);
+  const scrollAreaRef = useRef<HTMLDivElement | null>(null);
 
-  // Auto scroll to bottom
+  // Auto scroll to bottom - FIXED VERSION
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
+    }
   }, [messages]);
 
   // Generate or get username from localStorage
@@ -85,7 +91,7 @@ export default function GlobalChatPage() {
       <main className="w-full max-w-4xl mx-auto mt-10 space-y-4 flex-grow flex flex-col px-4">
         <Card className="flex-1 flex flex-col">
           <CardContent className="p-0 flex-1 bg-muted">
-            <ScrollArea className="h-[calc(100vh-300px)] p-4">
+            <ScrollArea ref={scrollAreaRef} className="h-[calc(100vh-300px)] p-4">
               {messages.length === 0 && (
                 <div className="text-muted-foreground text-center">
                   No messages yet.
