@@ -131,10 +131,10 @@ export default function BrowsePage() {
 
         {/* Filters */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
-          <Input placeholder="Have Slot" onChange={(e) => setFilter({ ...filter, have: e.target.value })} />
-          <Input placeholder="Want Slot" onChange={(e) => setFilter({ ...filter, want: e.target.value })} />
-          <Input placeholder="Professor (Have)" onChange={(e) => setFilter({ ...filter, professor_have: e.target.value })} />
-          <Input placeholder="Professor (Need)" onChange={(e) => setFilter({ ...filter, professor_need: e.target.value })} />
+          <Input placeholder="Want Slot" onChange={(e) => setFilter({ ...filter, have: e.target.value })} />
+          <Input placeholder="Have Slot" onChange={(e) => setFilter({ ...filter, want: e.target.value })} />
+          <Input placeholder="Professor (Need)" onChange={(e) => setFilter({ ...filter, professor_have: e.target.value })} />
+          <Input placeholder="Professor (Have)" onChange={(e) => setFilter({ ...filter, professor_need: e.target.value })} />
           <Input placeholder="Course" onChange={(e) => setFilter({ ...filter, course: e.target.value })} />
         </div>
 
