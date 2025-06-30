@@ -41,50 +41,61 @@ export default function FacultyBrowse() {
     emp_id: "",
     school: "",
     cabin: "",
+    ratedOnly: false, // <-- add this here
   });
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      let userIdentifier = localStorage.getItem("user_identifier");
-      if (!userIdentifier) {
-        userIdentifier = crypto.randomUUID();
-        localStorage.setItem("user_identifier", userIdentifier);
-      }
-    }
-  }, []);
 
   const userIdentifier =
     typeof window !== "undefined"
       ? localStorage.getItem("user_identifier")
       : null;
+  function generateFallbackUUID() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
   useEffect(() => {
-    const fetchData = async () => {
-      const { data: entries, error } = await supabase
-        .from("faculty_cabins")
-        .select("*")
-        .order("faculty_name", { ascending: true });
-      
-      if (error) {
-        console.error("Error fetching faculty:", error);
-      }
-      setData(entries || []);
-    };
+  // 1. Set user identifier if not present
+  if (typeof window !== "undefined") {
+    let userIdentifier = localStorage.getItem("user_identifier");
+    if (!userIdentifier) {
+      userIdentifier = crypto?.randomUUID?.() || generateFallbackUUID();
+      localStorage.setItem("user_identifier", userIdentifier);
+    }
+  }
 
-    const fetchRatings = async () => {
-      const { data: ratingEntries, error } = await supabase
-        .from("faculty_ratings")
-        .select("*");
-      
-      if (error) {
-        console.error("Error fetching ratings:", error);
-      }
-      setRatings(ratingEntries || []);
-    };
+  // 2. Fetch faculty data
+  const fetchData = async () => {
+    const { data: entries, error } = await supabase
+      .from("faculty_cabins")
+      .select("*")
+      .order("faculty_name", { ascending: true });
 
-    fetchData();
-    fetchRatings();
-  }, []);
+    if (error) {
+      console.error("Error fetching faculty:", error);
+    }
+
+    setData(entries || []);
+  };
+
+  // 3. Fetch ratings
+  const fetchRatings = async () => {
+    const { data: ratingEntries, error } = await supabase
+      .from("faculty_ratings")
+      .select("*");
+
+    if (error) {
+      console.error("Error fetching ratings:", error);
+    }
+
+    setRatings(ratingEntries || []);
+  };
+
+  fetchData();
+  fetchRatings();
+}, []);
 
   const handleSubmitRating = async (empId: string) => {
     if (!userIdentifier) {
@@ -202,21 +213,40 @@ const renderStars = (rating: number) => {
       }
     }));
   };
+  
   const filtered = useMemo(() => {
-    return data.filter((entry) =>
+  return data.filter((entry) => {
+    const matches =
       (!filter.name || entry.faculty_name.toLowerCase().includes(filter.name.toLowerCase())) &&
       (!filter.emp_id || entry.emp_id.toLowerCase().includes(filter.emp_id.toLowerCase())) &&
       (!filter.school || entry.school.toLowerCase().includes(filter.school.toLowerCase())) &&
-      (!filter.cabin || entry.cabin_detail.toLowerCase().includes(filter.cabin.toLowerCase()))
-    );
-  }, [data, filter]);
+      (!filter.cabin || entry.cabin_detail.toLowerCase().includes(filter.cabin.toLowerCase()));
+
+    const hasRating = getFacultyRatings(entry.emp_id) !== null;
+
+    return matches && (!filter.ratedOnly || hasRating);
+  });
+}, [data, filter, ratings]);
+
 
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
       <main className="flex-1 max-w-3xl mx-auto mt-10 space-y-4 px-4">
         <h2 className="text-2xl font-bold">Faculty Cabin Directory</h2>
-        
+        <div className="flex items-center gap-2 mt-2">
+  <input
+    type="checkbox"
+    id="rated-only"
+    onChange={(e) =>
+      setFilter((prev) => ({ ...prev, ratedOnly: e.target.checked }))
+    }
+  />
+  <label htmlFor="rated-only" className="text-sm text-gray-700">
+    Show only rated faculty
+  </label>
+</div>
+
         {/* Filters */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <Input
@@ -347,10 +377,11 @@ const renderStars = (rating: number) => {
 <Textarea
   value={getCurrentRating(entry.emp_id).comment}
   onChange={(e) => updateRating(entry.emp_id, 'comment', e.target.value)}
-  className="bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 text-sm"
+  className="bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 text-base" // 👈 changed from text-sm
   rows={2}
   placeholder="Share your experience..."
 />
+
 
 
                       </div>
