@@ -1,8 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowUpRight, FileText, HelpingHand } from "lucide-react";
+import { ArrowUpRight, FileText, HelpingHand, PersonStanding } from "lucide-react";
 import Link from "next/link";
-import Spline from '@splinetool/react-spline/next';
+import Spline from "@splinetool/react-spline/next";
 
 const Hero = () => {
   return (
@@ -10,13 +10,13 @@ const Hero = () => {
       <div className="max-w-screen-xl w-full flex flex-col lg:flex-row mx-auto items-center justify-between gap-y-14 gap-x-10 px-6 py-12 lg:py-0">
         <div className="max-w-xl">
           <Badge className="rounded-full py-1 border-none">
-            VIT · Slot Exchange
+            VIT · Student Tools
           </Badge>
           <h1 className="mt-6 max-w-[20ch] text-3xl xs:text-4xl sm:text-5xl lg:text-[2.75rem] xl:text-5xl font-bold !leading-[1.2] tracking-tight">
-            Seamless Slot Swapping for VIT Students
+            Seamless Slot Swapping & Faculty Insights
           </h1>
           <p className="mt-6 max-w-[60ch] xs:text-lg">
-            Easily exchange class slots with fellow students. Post your availability, find matches instantly, and stay ahead without the hassle.
+            Effortlessly exchange class slots with fellow VIT students, and explore detailed faculty cabin info with real student ratings — all in one place.
           </p>
           <div className="mt-12 flex flex-col sm:flex-row items-center gap-4">
             <Link href="/browse">
@@ -24,16 +24,17 @@ const Hero = () => {
                 size="lg"
                 className="w-full sm:w-auto rounded-full text-base"
               >
-                Browse Requests <ArrowUpRight className="!h-5 !w-5" />
+                Browse Slot Requests <ArrowUpRight className="!h-5 !w-5" />
               </Button>
             </Link>
-            <Link href="/ask">
+            <Link href="/faculty">
               <Button
-                variant="outline"
+                variant="ghost"
                 size="lg"
-                className="w-full sm:w-auto rounded-full text-base shadow-none"
+                className="w-full sm:w-auto rounded-full text-base"
               >
-                <HelpingHand className="!h-5 !w-5" /> Post a Request
+                <PersonStanding className="!h-5 !w-5 mr-2" />
+                Faculty Ratings
               </Button>
             </Link>
           </div>
