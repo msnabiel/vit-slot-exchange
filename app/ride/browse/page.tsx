@@ -41,6 +41,11 @@ function formatDateToReadable(dateStr: string): string {
 
   return `${getOrdinal(day)} ${month} ${year}`;
 }
+function getTodayDateStr() {
+  const today = new Date();
+  return today.toISOString().split("T")[0]; // format: 'YYYY-MM-DD'
+}
+
 
 export default function RideBrowsePage() {
   const router = useRouter();
@@ -48,7 +53,7 @@ export default function RideBrowsePage() {
   const [filter, setFilter] = useState({
     from: "",
     to: "",
-    date: "",
+    date: getTodayDateStr(),
     time: "",
   });
   const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("open");
@@ -146,7 +151,7 @@ export default function RideBrowsePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <Input placeholder="From" onChange={(e) => setFilter({ ...filter, from: e.target.value })} />
           <Input placeholder="To" onChange={(e) => setFilter({ ...filter, to: e.target.value })} />
-          <Input placeholder="Date" type="date" onChange={(e) => setFilter({ ...filter, date: e.target.value })} />
+          <Input placeholder="Date" type="date" value={filter.date} onChange={(e) => setFilter({ ...filter, date: e.target.value })} />
           <Input placeholder="Time" onChange={(e) => setFilter({ ...filter, time: e.target.value })} />
         </div>
 
