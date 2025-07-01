@@ -18,9 +18,11 @@ type RideRequest = {
   time: string;
   name: string;
   mobile: string;
-  status?: "open" | "closed";
+  timestamp?: string;
   user_identifier?: string;
+  status?: string;
 };
+
 function formatDateToReadable(dateStr: string): string {
   const date = new Date(dateStr);
   const day = date.getDate();
@@ -47,6 +49,7 @@ export default function RideBrowsePage() {
     from: "",
     to: "",
     date: "",
+    time: "",
   });
   const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("open");
 
@@ -56,16 +59,15 @@ export default function RideBrowsePage() {
       : null;
 
   useEffect(() => {
-    const fetchRides = async () => {
-      const { data: rides } = await supabase
+    const fetchEntries = async () => {
+      const { data: entries } = await supabase
         .from("ride_requests")
         .select("*")
         .order("created_at", { ascending: false });
 
-      setData(rides || []);
+      setData(entries || []);
     };
-
-    fetchRides();
+    fetchEntries();
   }, []);
 
   const handleStatusChange = async (id: string, status: "closed" | "open") => {
@@ -74,9 +76,17 @@ export default function RideBrowsePage() {
       .update({ status })
       .eq("id", id);
 
-    if (!error) {
-      setData((prev) =>
-        prev.map((ride) => (ride.id === id ? { ...ride, status } : ride))
+    console.log(`Trying to change status to "${status}" for ID:`, id);
+    console.log("Supabase error:", error);
+
+    if (error) {
+      console.error(`Failed to update status to "${status}":`, error);
+    } else {
+      console.log(`Request successfully marked as ${status}`);
+      setData((prevData) =>
+        prevData.map((entry) =>
+          entry.id === id ? { ...entry, status } : entry
+        )
       );
     }
   };
@@ -84,9 +94,10 @@ export default function RideBrowsePage() {
   const filtered = useMemo(() => {
     return data.filter((entry) => {
       const matchesFilters =
-        (!filter.from || entry.from.toLowerCase().includes(filter.from.toLowerCase())) &&
-        (!filter.to || entry.to.toLowerCase().includes(filter.to.toLowerCase())) &&
-        (!filter.date || entry.date.includes(filter.date));
+        (!filter.from || (entry.from ?? "").toLowerCase().includes(filter.from.toLowerCase())) &&
+        (!filter.to || (entry.to ?? "").toLowerCase().includes(filter.to.toLowerCase())) &&
+        (!filter.date || (entry.date ?? "").toLowerCase().includes(filter.date.toLowerCase())) &&
+        (!filter.time || (entry.time ?? "").toLowerCase().includes(filter.time.toLowerCase()));
 
       const matchesStatus =
         statusFilter === "all" || entry.status === statusFilter;
@@ -98,7 +109,7 @@ export default function RideBrowsePage() {
   const grouped = useMemo(() => {
     const map = new Map<string, RideRequest[]>();
     for (const entry of filtered) {
-      const key = `${entry.from}|${entry.to}|${entry.date}`;
+      const key = `${entry.from ?? ""}|${entry.to ?? ""}|${entry.date ?? ""}`;
       if (!map.has(key)) {
         map.set(key, []);
       }
@@ -132,13 +143,14 @@ export default function RideBrowsePage() {
         </div>
 
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           <Input placeholder="From" onChange={(e) => setFilter({ ...filter, from: e.target.value })} />
           <Input placeholder="To" onChange={(e) => setFilter({ ...filter, to: e.target.value })} />
           <Input placeholder="Date" type="date" onChange={(e) => setFilter({ ...filter, date: e.target.value })} />
+          <Input placeholder="Time" onChange={(e) => setFilter({ ...filter, time: e.target.value })} />
         </div>
 
-        {/* Status Filter */}
+        {/* Status Filter Toggle Group */}
         <ToggleGroup
           type="single"
           value={statusFilter}
@@ -152,7 +164,7 @@ export default function RideBrowsePage() {
           <ToggleGroupItem value="closed">Closed</ToggleGroupItem>
         </ToggleGroup>
 
-        {/* Grouped Ride Listings */}
+        {/* Grouped Listings */}
         {grouped.map((group, i) => (
           <Card key={i}>
             <CardContent className="p-4 space-y-2">
@@ -164,41 +176,44 @@ export default function RideBrowsePage() {
                 </span>
               </p>
               <p>
-  <strong>Date:</strong> {formatDateToReadable(group.date)}
-</p>
-
+                <strong>Date:</strong> {formatDateToReadable(group.date)}
+              </p>
 
               <div className="mt-2 p-2 border rounded bg-green-50">
                 <p className="font-medium text-green-800">Contact Info:</p>
                 <ul className="text-sm text-green-700 list-disc list-inside">
                   {group.entries.map((entry, j) => (
                     <li key={j}>
-  {entry.name} - {entry.mobile}
-  <span className="ml-1 text-xs text-gray-600">({entry.time})</span>
-  {entry.user_identifier === userIdentifier && (
-    <>
-      {entry.status !== "closed" ? (
-        <button
-          className="ml-2 text-xs text-red-600 underline"
-          onClick={() => handleStatusChange(entry.id, "closed")}
-        >
-          Close
-        </button>
-      ) : (
-        <button
-          className="ml-2 text-xs text-blue-600 underline"
-          onClick={() => handleStatusChange(entry.id, "open")}
-        >
-          Reopen
-        </button>
-      )}
-    </>
-  )}
-  {entry.status === "closed" && (
-    <span className="ml-2 text-xs text-gray-500">[Closed]</span>
-  )}
-</li>
-
+                      {entry.name} - {entry.mobile}
+                      <span className="ml-1 text-xs text-gray-600">({entry.time})</span>
+                      {entry.timestamp && (
+                        <span className="ml-2 text-xs text-gray-500">
+                          • {entry.timestamp}
+                        </span>
+                      )}
+                      {entry.user_identifier === userIdentifier && (
+                        <>
+                          {entry.status !== "closed" ? (
+                            <button
+                              className="ml-2 text-xs text-red-600 underline"
+                              onClick={() => handleStatusChange(entry.id, "closed")}
+                            >
+                              Close
+                            </button>
+                          ) : (
+                            <button
+                              className="ml-2 text-xs text-blue-600 underline"
+                              onClick={() => handleStatusChange(entry.id, "open")}
+                            >
+                              Reopen
+                            </button>
+                          )}
+                        </>
+                      )}
+                      {entry.status === "closed" && (
+                        <span className="ml-2 text-xs text-gray-500">[Closed]</span>
+                      )}
+                    </li>
                   ))}
                 </ul>
               </div>
