@@ -9,6 +9,14 @@ import Footer from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@/components/ui/popover";
+import { ChevronDownIcon } from "lucide-react";
 
 type RideRequest = {
   id: string;
@@ -26,7 +34,7 @@ type RideRequest = {
 function formatDateToReadable(dateStr: string): string {
   const date = new Date(dateStr);
   const day = date.getDate();
-  const month = date.toLocaleString("en-IN", { month: "long" }); // e.g., July
+  const month = date.toLocaleString("en-IN", { month: "long" });
   const year = date.getFullYear();
 
   const getOrdinal = (n: number) => {
@@ -41,27 +49,21 @@ function formatDateToReadable(dateStr: string): string {
 
   return `${getOrdinal(day)} ${month} ${year}`;
 }
-function getTodayDateStr() {
-  const today = new Date();
-  return today.toISOString().split("T")[0]; // format: 'YYYY-MM-DD'
-}
-
 
 export default function RideBrowsePage() {
   const router = useRouter();
   const [data, setData] = useState<RideRequest[]>([]);
+  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("open");
+
   const [filter, setFilter] = useState({
     from: "",
     to: "",
-    date: getTodayDateStr(),
+    date: undefined as Date | undefined,
     time: "",
   });
-  const [statusFilter, setStatusFilter] = useState<"all" | "open" | "closed">("open");
 
   const userIdentifier =
-    typeof window !== "undefined"
-      ? localStorage.getItem("user_identifier")
-      : null;
+    typeof window !== "undefined" ? localStorage.getItem("user_identifier") : null;
 
   useEffect(() => {
     const fetchEntries = async () => {
@@ -81,15 +83,9 @@ export default function RideBrowsePage() {
       .update({ status })
       .eq("id", id);
 
-    console.log(`Trying to change status to "${status}" for ID:`, id);
-    console.log("Supabase error:", error);
-
-    if (error) {
-      console.error(`Failed to update status to "${status}":`, error);
-    } else {
-      console.log(`Request successfully marked as ${status}`);
-      setData((prevData) =>
-        prevData.map((entry) =>
+    if (!error) {
+      setData((prev) =>
+        prev.map((entry) =>
           entry.id === id ? { ...entry, status } : entry
         )
       );
@@ -99,10 +95,12 @@ export default function RideBrowsePage() {
   const filtered = useMemo(() => {
     return data.filter((entry) => {
       const matchesFilters =
-        (!filter.from || (entry.from ?? "").toLowerCase().includes(filter.from.toLowerCase())) &&
-        (!filter.to || (entry.to ?? "").toLowerCase().includes(filter.to.toLowerCase())) &&
-        (!filter.date || (entry.date ?? "").toLowerCase().includes(filter.date.toLowerCase())) &&
-        (!filter.time || (entry.time ?? "").toLowerCase().includes(filter.time.toLowerCase()));
+        (!filter.from || entry.from?.toLowerCase().includes(filter.from.toLowerCase())) &&
+        (!filter.to || entry.to?.toLowerCase().includes(filter.to.toLowerCase())) &&
+        (!filter.date ||
+          (entry.date &&
+           new Date(entry.date).toISOString().slice(0, 10) === filter.date.toISOString().slice(0, 10))) &&
+        (!filter.time || entry.time?.toLowerCase().includes(filter.time.toLowerCase()));
 
       const matchesStatus =
         statusFilter === "all" || entry.status === statusFilter;
@@ -123,13 +121,7 @@ export default function RideBrowsePage() {
 
     return Array.from(map.entries()).map(([key, group]) => {
       const [from, to, date] = key.split("|");
-      return {
-        from,
-        to,
-        date,
-        entries: group,
-        count: group.length,
-      };
+      return { from, to, date, entries: group, count: group.length };
     });
   }, [filtered]);
 
@@ -149,19 +141,55 @@ export default function RideBrowsePage() {
 
         {/* Filters */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-          <Input placeholder="From" onChange={(e) => setFilter({ ...filter, from: e.target.value })} />
-          <Input placeholder="To" onChange={(e) => setFilter({ ...filter, to: e.target.value })} />
-          <Input placeholder="Date" type="date" value={filter.date} onChange={(e) => setFilter({ ...filter, date: e.target.value })} />
-          <Input placeholder="Time" onChange={(e) => setFilter({ ...filter, time: e.target.value })} />
+          <Input
+            placeholder="From"
+            onChange={(e) => setFilter({ ...filter, from: e.target.value })}
+          />
+          <Input
+            placeholder="To"
+            onChange={(e) => setFilter({ ...filter, to: e.target.value })}
+          />
+          {/* Calendar Popover 
+          <div className="flex flex-col gap-1">
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  id="date"
+                  className="justify-between font-normal"
+                >
+                  {filter.date
+                    ? filter.date.toLocaleDateString("en-CA")
+                    : "Select date"}
+                  <ChevronDownIcon className="ml-2 h-4 w-4" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 rounded-none" align="start">
+                <Calendar
+                  mode="single"
+                  selected={filter.date}
+                  onSelect={(date) => {
+                    setFilter({ ...filter, date: date ?? undefined });
+                  }}
+                  captionLayout="dropdown"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>*/}
+
+          <Input
+            placeholder="Time"
+            onChange={(e) => setFilter({ ...filter, time: e.target.value })}
+          />
         </div>
 
-        {/* Status Filter Toggle Group */}
+        {/* Toggle Group */}
         <ToggleGroup
           type="single"
           value={statusFilter}
-          onValueChange={(value) => {
-            if (value) setStatusFilter(value as "all" | "open" | "closed");
-          }}
+          onValueChange={(value) =>
+            value && setStatusFilter(value as "all" | "open" | "closed")
+          }
           className="mt-2"
         >
           <ToggleGroupItem value="all">All</ToggleGroupItem>
@@ -169,13 +197,13 @@ export default function RideBrowsePage() {
           <ToggleGroupItem value="closed">Closed</ToggleGroupItem>
         </ToggleGroup>
 
-        {/* Grouped Listings */}
+        {/* Results */}
         {grouped.map((group, i) => (
           <Card key={i}>
             <CardContent className="p-4 space-y-2">
               <p>
-                <strong>From:</strong> {group.from} &nbsp;→&nbsp;
-                <strong>To:</strong> {group.to}
+                <strong>From:</strong> {group.from} → <strong>To:</strong>{" "}
+                {group.to}{" "}
                 <span className="ml-2 text-green-600 font-semibold">
                   [x {group.count}]
                 </span>
@@ -183,14 +211,15 @@ export default function RideBrowsePage() {
               <p>
                 <strong>Date:</strong> {formatDateToReadable(group.date)}
               </p>
-
               <div className="mt-2 p-2 border rounded bg-green-50">
                 <p className="font-medium text-green-800">Contact Info:</p>
                 <ul className="text-sm text-green-700 list-disc list-inside">
                   {group.entries.map((entry, j) => (
                     <li key={j}>
                       {entry.name} - {entry.mobile}
-                      <span className="ml-1 text-xs text-gray-600">({entry.time})</span>
+                      <span className="ml-1 text-xs text-gray-600">
+                        ({entry.time})
+                      </span>
                       {entry.timestamp && (
                         <span className="ml-2 text-xs text-gray-500">
                           • {entry.timestamp}
@@ -201,14 +230,18 @@ export default function RideBrowsePage() {
                           {entry.status !== "closed" ? (
                             <button
                               className="ml-2 text-xs text-red-600 underline"
-                              onClick={() => handleStatusChange(entry.id, "closed")}
+                              onClick={() =>
+                                handleStatusChange(entry.id, "closed")
+                              }
                             >
                               Close
                             </button>
                           ) : (
                             <button
                               className="ml-2 text-xs text-blue-600 underline"
-                              onClick={() => handleStatusChange(entry.id, "open")}
+                              onClick={() =>
+                                handleStatusChange(entry.id, "open")
+                              }
                             >
                               Reopen
                             </button>
@@ -216,7 +249,9 @@ export default function RideBrowsePage() {
                         </>
                       )}
                       {entry.status === "closed" && (
-                        <span className="ml-2 text-xs text-gray-500">[Closed]</span>
+                        <span className="ml-2 text-xs text-gray-500">
+                          [Closed]
+                        </span>
                       )}
                     </li>
                   ))}
