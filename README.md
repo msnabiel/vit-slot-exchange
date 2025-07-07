@@ -1,6 +1,3 @@
-
----
-
 # VIT Slot Exchange – Simplify Your Timetable Swaps
 
 A smart platform built for VIT students to seamlessly exchange class slots. Whether you're looking to swap lab timings or find a better theory slot, VIT Slot Exchange makes it easy, anonymous, and efficient.
